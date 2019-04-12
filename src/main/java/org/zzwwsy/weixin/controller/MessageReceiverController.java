@@ -1,12 +1,11 @@
 package org.zzwwsy.weixin.controller;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 // 控制器 : 负责接收用户的请求参数、调用业务逻辑层代码、返回视图/结果给客户端（浏览器）
-@Controller
+//@Controller
 //@Controller  基于JSP的控制器
 //@RestController 符合RESTful风格的WEB服务的控制器
 //RESTful通过不同的请求方法调用不同的处理程序，返回的结果仅仅是数据，不包含视图（HTML、JSP）
