@@ -5,7 +5,7 @@
 
 <configuration>
 	<property name="CONSOLE_LOG_PATTERN"
-		value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%C %L){cyan} %clr(:){faint} %n    %m%n%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
+		value="E:\JAVA\Logger" />
 	<include
 		resource="org/springframework/boot/logging/logback/base.xml" />
 	<!-- 嵌入式Tomcat的日志输出 -->
@@ -21,7 +21,7 @@
 	<!-- org.zzwwsy能够匹配到相同包里面的全部类的日志记录器 -->
 	<!-- trace是最详细的日志跟踪级别，可以输出完整的日志信息 -->
 	<!-- trace > debug > info > warn > error > off -->
-	<logger name="org.fkjava" level="trace" />
+	<logger name="org.zzwwsy" level="trace" />
 
 	<root level="error">
 		<appender-ref ref="CONSOLE" />
