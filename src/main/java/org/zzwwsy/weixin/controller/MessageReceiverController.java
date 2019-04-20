@@ -1,5 +1,9 @@
 package org.zzwwsy.weixin.controller;
 
+import java.io.StringReader;
+
+import javax.xml.bind.JAXB;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.zzwwsy.weixin.domain.InMessage;
+import org.zzwwsy.weixin.service.MessageTypeMapper;
 
 // 控制器 : 负责接收用户的请求参数、调用业务逻辑层代码、返回视图/结果给客户端（浏览器）
 //@Controller
@@ -50,12 +56,27 @@ public class MessageReceiverController {
 			//收到消息
 			//{}是占位符，第一个{}会把第二个参数的值自动填入；
 			//LOG.trace必须要求日志记录器的配置为Trace级别才能输出
-			LOG.trace("收到的消息原文：\n{}\n-------------------------------------", xml);
-//			转换消息
-//			把消息丢入队列
-//			消费队列中的消息
-//			产生客服消息
+			LOG.debug("收到用户发送给公众号的信息: \n-----------------------------------------\n"
+					+ "{}\n-----------------------------------------\n", xml);
+
+//			if (xml.contains("<MsgType><![CDATA[text]]></MsgType>")) {
+//			} else if (xml.contains("<MsgType><![CDATA[image]]></MsgType>")) {
+//			} else if (xml.contains("<MsgType><![CDATA[voice]]></MsgType>")) {
+//			} else if (xml.contains("<MsgType><![CDATA[video]]></MsgType>")) {
+//			} else if (xml.contains("<MsgType><![CDATA[location]]></MsgType>")) {
+//			}
 			
+			//截取消息类型
+			String type = xml.substring(0);
+			Class<InMessage>cla = MessageTypeMapper.getClass(type);
+			
+			//使用JAXB完成XML转换为Java对象的操作
+			InMessage inMessage = JAXB.unmarshal(new StringReader(xml), cla);
+			
+			LOG.debug("转换得到的消息对象 \n{}\n", inMessage.toString());
+
+			
+			// 由于后面会把消息放入队列中，所以这里直接返回success。
 			return "success";
 		}
 		
