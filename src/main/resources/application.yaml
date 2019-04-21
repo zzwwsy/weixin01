@@ -6,8 +6,8 @@ spring:
       password: 1234
 
 
-      # 配置Redis的连接信息
-   Redis:
+   # 配置Redis的连接信息
+   Redis: 
       host: 127.0.0.1
       port: 6379
    
