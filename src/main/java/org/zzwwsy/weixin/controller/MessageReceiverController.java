@@ -31,12 +31,12 @@ import org.zzwwsy.weixin.service.MessageTypeMapper;
 @RestController
 //各自写代码的时候，把/kemao_1改为【/拼音名】，用于后面作为路径反向代理的时候区分不同人的代码
 //@RequestMapping表示的含义：URL跟控制器的关系映射
-@RequestMapping("/weixin01/weixin/receiver")
+@RequestMapping("	")
 public class MessageReceiverController { 
 
 	//日志记录器
 	private static final Logger LOG = LoggerFactory.getLogger(MessageReceiverController.class);
-	
+
 	@Autowired
 	@Qualifier("inMessageTemplate")
 	private RedisTemplate<String, InMessage> inMessageTemplate;
@@ -60,16 +60,13 @@ public class MessageReceiverController {
 	
 		@PostMapping
 		//@RequestBody注解表示把请求内容获取出来，并且转换成string传入给xml参数。
-		public String onMessage(
-				@RequestParam("signature") String signature, //
+		public String onMessage(@RequestParam("signature") String signature, //
 				@RequestParam("timestamp") String timestamp, //
 				@RequestParam("nonce") String nonce, //
 				@RequestBody String xml) {
-			//收到消息
-			//{}是占位符，第一个{}会把第二个参数的值自动填入；
-			//LOG.trace必须要求日志记录器的配置为Trace级别才能输出
 			LOG.debug("收到用户发送给公众号的信息: \n-----------------------------------------\n"
 					+ "{}\n-----------------------------------------\n", xml);
+
 
 //			if (xml.contains("<MsgType><![CDATA[text]]></MsgType>")) {
 //			} else if (xml.contains("<MsgType><![CDATA[image]]></MsgType>")) {
@@ -113,7 +110,7 @@ public class MessageReceiverController {
 						Long l = connection.publish(channel.getBytes(), out.toByteArray());
 						System.out.println("发布结果：" + l);
 					}catch(Exception e){
-						LOG.error("把消息放入队列时出现问题：" + e.getLocalizedMessage(),e);
+						LOG.error("把消息放入队列时出现问题：" + e.getLocalizedMessage(), e);
 					}
 					return null;
 				}
