@@ -31,7 +31,7 @@ import org.zzwwsy.weixin.service.MessageTypeMapper;
 @RestController
 //各自写代码的时候，把/kemao_1改为【/拼音名】，用于后面作为路径反向代理的时候区分不同人的代码
 //@RequestMapping表示的含义：URL跟控制器的关系映射
-@RequestMapping("	")
+@RequestMapping("/weixin01/weixin/receiver")
 public class MessageReceiverController { 
 
 	//日志记录器
