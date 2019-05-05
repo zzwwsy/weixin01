@@ -13,6 +13,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @XmlRootElement(name = "xml") 			// JAXB读取XML时根元素名称
 public class VoiceInMessage extends InMessage{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@XmlElement(name = "MediaId")
 	@JsonProperty("MediaId")
 	private String voice_m_Id;
