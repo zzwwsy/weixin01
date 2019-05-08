@@ -86,35 +86,38 @@ public class MessageReceiverController {
 			InMessage inMessage = JAXB.unmarshal(new StringReader(xml), cla);
 			
 			LOG.debug("转换得到的消息对象 \n{}\n", inMessage.toString());
+			
+			
+			inMessageTemplate.convertAndSend("weixin01_" + inMessage.getMsgType(), inMessage);
 
-			//把消息放入消息对列
-			inMessageTemplate.execute(new RedisCallback<String>(){
-
-				//connection对象表示跟Redis数据库的连接
-				@Override
-				public String doInRedis(RedisConnection connection) throws DataAccessException {
-					try {
-						// 发布消息的时候，需要准备两个byte[]
-						// 一个作为通道名称来使用，类似于无线电广播，不同的频道声音是隔离的。通道名称是Redis用来隔离不同数据的。
-						// 比如文本消息、图片消息处理方式不同，所以使用前缀来隔离： text* 表示文本消息、image* 表示图片消息。
-						// 建议在多人共享一个服务器的时候，每个人使用不同的数据库实例即可，并且建议在通道名称之前加上反向代理的前缀。
-						// 查询反向代理前缀：cat /etc/nginx/sites-available/default
-						
-						String channel = "weixin01_" + inMessage.getMsgType();
-						
-						//消息内容要自己序列化才能放入队列中
-						ByteArrayOutputStream out = new ByteArrayOutputStream();// 输出流
-						ObjectOutputStream oos = new ObjectOutputStream(out);
-						oos.writeObject(inMessage);
-						
-						Long l = connection.publish(channel.getBytes(), out.toByteArray());
-						System.out.println("发布结果：" + l);
-					}catch(Exception e){
-						LOG.error("把消息放入队列时出现问题：" + e.getLocalizedMessage(), e);
-					}
-					return null;
-				}
-			});
+//			//把消息放入消息对列
+//			inMessageTemplate.execute(new RedisCallback<String>(){
+//
+//				//connection对象表示跟Redis数据库的连接
+//				@Override
+//				public String doInRedis(RedisConnection connection) throws DataAccessException {
+//					try {
+//						// 发布消息的时候，需要准备两个byte[]
+//						// 一个作为通道名称来使用，类似于无线电广播，不同的频道声音是隔离的。通道名称是Redis用来隔离不同数据的。
+//						// 比如文本消息、图片消息处理方式不同，所以使用前缀来隔离： text* 表示文本消息、image* 表示图片消息。
+//						// 建议在多人共享一个服务器的时候，每个人使用不同的数据库实例即可，并且建议在通道名称之前加上反向代理的前缀。
+//						// 查询反向代理前缀：cat /etc/nginx/sites-available/default
+//						
+//						String channel = "weixin01_" + inMessage.getMsgType();
+//						
+//						//消息内容要自己序列化才能放入队列中
+//						ByteArrayOutputStream out = new ByteArrayOutputStream();// 输出流
+//						ObjectOutputStream oos = new ObjectOutputStream(out);
+//						oos.writeObject(inMessage);
+//						
+//						Long l = connection.publish(channel.getBytes(), out.toByteArray());
+//						System.out.println("发布结果：" + l);
+//					}catch(Exception e){
+//						LOG.error("把消息放入队列时出现问题：" + e.getLocalizedMessage(), e);
+//					}
+//					return null;
+//				}
+//			});
 			
 			// 由于后面会把消息放入队列中，所以这里直接返回success。
 			return "success";
