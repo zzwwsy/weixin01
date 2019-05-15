@@ -32,9 +32,9 @@ import org.zzwwsy.weixin.service.MessageTypeMapper;
 //各自写代码的时候，把/kemao_1改为【/拼音名】，用于后面作为路径反向代理的时候区分不同人的代码
 //@RequestMapping表示的含义：URL跟控制器的关系映射
 @RequestMapping("/weixin01/weixin/receiver")
-public class MessageReceiverController { 
+public class MessageReceiverController {
 
-	//日志记录器
+	// 日志记录器
 	private static final Logger LOG = LoggerFactory.getLogger(MessageReceiverController.class);
 
 	@Autowired
@@ -57,16 +57,14 @@ public class MessageReceiverController {
 		return echostr;
 	}
 
-	
-		@PostMapping
-		//@RequestBody注解表示把请求内容获取出来，并且转换成string传入给xml参数。
-		public String onMessage(@RequestParam("signature") String signature, //
-				@RequestParam("timestamp") String timestamp, //
-				@RequestParam("nonce") String nonce, //
-				@RequestBody String xml) {
-			LOG.debug("收到用户发送给公众号的信息: \n-----------------------------------------\n"
-					+ "{}\n-----------------------------------------\n", xml);
-
+	@PostMapping
+	// @RequestBody注解表示把请求内容获取出来，并且转换成string传入给xml参数。
+	public String onMessage(@RequestParam("signature") String signature, //
+			@RequestParam("timestamp") String timestamp, //
+			@RequestParam("nonce") String nonce, //
+			@RequestBody String xml) {
+		LOG.debug("收到用户发送给公众号的信息: \n-----------------------------------------\n"
+				+ "{}\n-----------------------------------------\n", xml);
 
 //			if (xml.contains("<MsgType><![CDATA[text]]></MsgType>")) {
 //			} else if (xml.contains("<MsgType><![CDATA[image]]></MsgType>")) {
@@ -74,21 +72,20 @@ public class MessageReceiverController {
 //			} else if (xml.contains("<MsgType><![CDATA[video]]></MsgType>")) {
 //			} else if (xml.contains("<MsgType><![CDATA[location]]></MsgType>")) {
 //			}
-			
-			//截取消息类型
-			//<MsgType><![CDATA[text]]></MsgType>
-			String type = xml.substring(xml.indexOf("<MsgType><![CDATA[") + 18);
-			type = type.substring(0,type.indexOf("]]></MsgType>"));
-			
-			Class<InMessage> cla = MessageTypeMapper.getClass(type);
-			
-			//使用JAXB完成XML转换为Java对象的操作
-			InMessage inMessage = JAXB.unmarshal(new StringReader(xml), cla);
-			
-			LOG.debug("转换得到的消息对象 \n{}\n", inMessage.toString());
-			
-			
-			inMessageTemplate.convertAndSend("weixin01_" + inMessage.getMsgType(), inMessage);
+
+		// 截取消息类型
+		// <MsgType><![CDATA[text]]></MsgType>
+		String type = xml.substring(xml.indexOf("<MsgType><![CDATA[") + 18);
+		type = type.substring(0, type.indexOf("]"));
+
+		Class<InMessage> cla = MessageTypeMapper.getClass(type);
+
+		// 使用JAXB完成XML转换为Java对象的操作
+		InMessage inMessage = JAXB.unmarshal(new StringReader(xml), cla);
+
+		LOG.debug("转换得到的消息对象 \n{}\n", inMessage.toString());
+
+		inMessageTemplate.convertAndSend("weixin01_" + inMessage.getMsgType(), inMessage);
 
 //			//把消息放入消息对列
 //			inMessageTemplate.execute(new RedisCallback<String>(){
@@ -118,8 +115,8 @@ public class MessageReceiverController {
 //					return null;
 //				}
 //			});
-			
-			// 由于后面会把消息放入队列中，所以这里直接返回success。
-			return "success";
-		}
-}	
+
+		// 由于后面会把消息放入队列中，所以这里直接返回success。
+		return "success";
+	}
+}
