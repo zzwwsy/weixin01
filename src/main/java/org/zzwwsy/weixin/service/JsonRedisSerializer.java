@@ -8,26 +8,25 @@ import java.util.Arrays;
 
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
-import org.zzwwsy.weixin.domain.InMessage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonRedisSerializer extends Jackson2JsonRedisSerializer<InMessage> {
+public class JsonRedisSerializer extends Jackson2JsonRedisSerializer<Object> {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
-	
-	public JsonRedisSerializer(){
-		super(InMessage.class);
+
+	public JsonRedisSerializer() {
+		super(Object.class);
 	}
-	
-	//序列化对象的时候被调用的方法，负责把InMessage转化为byte[]
+
+	// 序列化对象的时候被调用的方法，负责把InMessage转化为byte[]
 	@Override
-	public byte[] serialize(InMessage t) throws SerializationException {
+	public byte[] serialize(Object t) throws SerializationException {
 		// 我们现在希望把对象序列化成JSON字符串，但是JSON字符串本身不确定对象的类型，所以需要扩展：
 		// 序列化的时候先把类名的长度写出去，再写出类名，最后再来写JSON字符串。
-		
+
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();// 把数据输出到一个字节数组
-		DataOutputStream out = new DataOutputStream(baos);		// 把输出流封装成数据输出流
+		DataOutputStream out = new DataOutputStream(baos); // 把输出流封装成数据输出流
 
 		try {
 			String className = t.getClass().getName();// 获取类名
@@ -46,14 +45,14 @@ public class JsonRedisSerializer extends Jackson2JsonRedisSerializer<InMessage> 
 		} catch (Exception e) {
 			throw new SerializationException("序列化对象出现问题：" + e.getLocalizedMessage(), e);
 		}
-		
+
 //		return super.serialize(t);
 	}
-	
-	//反序列化对象的时候被调用的方法，负责把字节数组转化为InMessage
+
+	// 反序列化对象的时候被调用的方法，负责把字节数组转化为InMessage
 	@Override
-	public InMessage deserialize(byte[] bytes) throws SerializationException {
-		
+	public Object deserialize(byte[] bytes) throws SerializationException {
+
 		ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 		DataInputStream in = new DataInputStream(bais);
 
@@ -66,8 +65,7 @@ public class JsonRedisSerializer extends Jackson2JsonRedisSerializer<InMessage> 
 			// 把读取到的字节数组，转换为类名
 			String className = new String(classNameBytes, "UTF-8");
 			// 通过类名，加载类对象
-			@SuppressWarnings("unchecked")
-			Class<? extends InMessage> cla = (Class<? extends InMessage>) Class.forName(className);
+			Class<?> cla = Class.forName(className);
 
 			// length + 4 : 表示类名的长度和int的长度，一个int占4个字节
 			return this.objectMapper.readValue(Arrays.copyOfRange(bytes, length + 4, bytes.length), cla);
@@ -77,6 +75,7 @@ public class JsonRedisSerializer extends Jackson2JsonRedisSerializer<InMessage> 
 
 //		return super.deserialize(bytes);
 	}
+
 	public ObjectMapper getObjectMapper() {
 		return objectMapper;
 	}
