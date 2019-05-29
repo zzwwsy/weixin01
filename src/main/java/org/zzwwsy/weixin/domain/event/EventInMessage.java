@@ -21,6 +21,9 @@ public class EventInMessage extends InMessage {
 	@XmlElement(name = "Event")
 	@JsonProperty("Event")
 	private String event;
+	@XmlElement(name = "EventKey")
+	@JsonProperty("EventKey")
+	private String eventKey;
 
 	public String getEvent() {
 		return event;
@@ -30,13 +33,13 @@ public class EventInMessage extends InMessage {
 		this.event = event;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public String getEventKey() {
+		return eventKey;
 	}
 
-	@Override
-	public String toString() {
-		return "EventInMessage [event=" + event + "]";
+	public void setEventKey(String eventKey) {
+		this.eventKey = eventKey;
 	}
+
 
 }
